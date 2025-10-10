@@ -58,7 +58,7 @@ try {
         const aspect = `${aspectMatch[1]} / ${aspectMatch[2]}`;
 
         imageManifest.push({
-            file: file,
+            file: file.normalize('NFC'),
             sort: sortKey, // Add sort key to the object
             category: category,
             title: title,
