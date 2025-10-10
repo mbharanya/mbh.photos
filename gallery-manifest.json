@@ -1,0 +1,100 @@
+[
+  {
+    "file": "100_Landschaft_Bachtelspalt_2x3.jpg",
+    "sort": 100,
+    "category": "landscapes",
+    "title": "Bachtelspalt",
+    "aspect": "2 / 3"
+  },
+  {
+    "file": "110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg",
+    "sort": 110,
+    "category": "landscapes",
+    "title": "Herbst auf dem Bachtelturm",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "120_Landschaft_Verlassenes Haus_3x2.jpg",
+    "sort": 120,
+    "category": "landscapes",
+    "title": "Verlassenes Haus",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "130_Landschaft_Sonnenuntergang in Ägypten_3x2.JPG",
+    "sort": 130,
+    "category": "landscapes",
+    "title": "Sonnenuntergang in Ägypten",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "200_Tier_Kapuziner Affe_3x2.jpg",
+    "sort": 200,
+    "category": "animals",
+    "title": "Kapuziner Affe",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "210_Tier_Eichhörnchen auf Ast_3x2.jpg",
+    "sort": 210,
+    "category": "animals",
+    "title": "Eichhörnchen auf Ast",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "220_Tier_Eichhörnchen im Schnee_3x2.jpg",
+    "sort": 220,
+    "category": "animals",
+    "title": "Eichhörnchen im Schnee",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "230_Tier_Geckos_3x2.jpg",
+    "sort": 230,
+    "category": "animals",
+    "title": "Geckos",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "240_Tier_Murmeltier_3x2.jpg",
+    "sort": 240,
+    "category": "animals",
+    "title": "Murmeltier",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "250_Tier_Glasfrosch_3x2.jpg",
+    "sort": 250,
+    "category": "animals",
+    "title": "Glasfrosch",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "260_Tier_Faultier auf Ast_3x2.jpg",
+    "sort": 260,
+    "category": "animals",
+    "title": "Faultier auf Ast",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "270_Tier_Libelle_3x2.jpg",
+    "sort": 270,
+    "category": "animals",
+    "title": "Libelle",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "300_Vogel_Scharlachtangare_Weiblich_Nicaragua_3x2.jpg",
+    "sort": 300,
+    "category": "birds",
+    "title": "Scharlachtangare Weiblich Nicaragua",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "310_Vogel_Fischreiher auf Ast_3x2.jpg",
+    "sort": 310,
+    "category": "birds",
+    "title": "Fischreiher auf Ast",
+    "aspect": "3 / 2"
+  }
+]

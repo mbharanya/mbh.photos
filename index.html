@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Milan — Tier- und Naturfotografie</title>
+    <meta name="description"
+        content="Portfolio des Tier- und Naturfotografen Milan. Kunstdrucke, Feldgeschichten und kuratierte Sammlungen." />
+
+    <!-- Open Graph / Twitter for nice link previews -->
+    <meta property="og:title" content="Milan — Tier- und Naturfotografie" />
+    <meta property="og:description" content="Kunstdrucke, Feldgeschichten und kuratierte Sammlungen." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="watermarked/110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg" />
+    <meta property="og:site_name" content="Milan" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Preload hero for faster LCP -->
+    <link rel="preload" as="image" href="watermarked/110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg"
+        imagesrcset="watermarked/110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg 1600w"
+        imagesizes="(min-width: 768px) 50vw, 100vw" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Smooth fade-in for images */
+        img[data-ll][data-loaded="true"] {
+            filter: none;
+            opacity: 1;
+        }
+
+        img[data-ll] {
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity .5s ease, filter .5s ease;
+        }
+
+        /* Hide scrollbar when lightbox/modal open */
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        /* Simple modal backdrop */
+        #buyModal {
+            background: rgba(0, 0, 0, .75);
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeUp {
+            animation: fadeUp .6s ease both;
+        }
+
+        /* Active filter styling helper */
+        .is-active {
+            background-color: rgb(23 23 23 / 1);
+            border-color: rgb(64 64 64 / 1);
+            color: rgb(163 230 53 / 1);
+        }
+    </style>
+</head>
+
+<body class="bg-neutral-950 text-neutral-100 selection:bg-emerald-400 selection:text-neutral-900">
+    <!-- Header -->
+    <header class="fixed top-0 inset-x-0 z-50 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+            <a href="#home" class="font-semibold tracking-wide text-neutral-200 hover:text-emerald-400 transition">
+                Milan - mbh.photos
+            </a>
+            <button id="navToggle"
+                class="md:hidden inline-flex items-center gap-2 border border-neutral-800 rounded-xl px-3 py-2 hover:bg-neutral-900"
+                aria-label="Menü öffnen">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                Menü
+            </button>
+            <nav id="nav" class="hidden md:flex gap-6 text-sm">
+                <a href="#portfolio" class="hover:text-emerald-400 transition">Shop</a>
+                <a href="#about" class="hover:text-emerald-400 transition">Über Mich</a>
+                <a href="#contact" class="hover:text-emerald-400 transition">Kontakt</a>
+            </nav>
+        </div>
+        <div id="mobileNav" class="md:hidden hidden border-t border-neutral-800">
+            <div class="px-4 py-3 flex flex-col gap-3 text-sm">
+                <a class="hover:text-emerald-400 transition" href="#portfolio">Shop</a>
+                <a class="hover:text-emerald-400 transition" href="#about">Über Mich</a>
+                <a class="hover:text-emerald-400 transition" href="#contact">Kontakt</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="home" class="pt-28 md:pt-36">
+        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
+            <div class="animate-fadeUp">
+                <h1 class="text-4xl md:text-6xl font-semibold leading-tight">Tier- und Naturfotografie</h1>
+                <p class="mt-4 text-neutral-300 md:text-lg max-w-prose">Gesichter der Natur.</p>
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="#portfolio"
+                        class="rounded-2xl px-5 py-3 bg-emerald-400 text-neutral-900 font-medium hover:brightness-95 transition">Portfolio
+                        ansehen</a>
+                    <a href="#contact"
+                        class="rounded-2xl px-5 py-3 border border-neutral-700 hover:bg-neutral-900 transition">Kontakt
+                        aufnehmen</a>
+                </div>
+            </div>
+            <div class="relative rounded-3xl overflow-hidden border border-neutral-800 shadow-xl">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+                <img src="watermarked/110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg"
+                    alt="Herbstlandschaft auf dem Bachtelturm" class="w-full h-full object-cover"
+                    style="aspect-ratio: 4/3" loading="eager" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio / Shop -->
+    <section id="portfolio" class="scroll-mt-24 md:scroll-mt-28 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-end justify-between gap-6 flex-wrap">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-semibold">Drucke kaufen</h2>
+                    <p class="mt-3 text-neutral-300 leading-relaxed max-w-prose sm:text-base text-sm">
+                        Wähle dein Lieblingsmotiv und die passende Grösse. Jedes Bild wird auf hochwertigem Fotopapier
+                        auf eine 2&nbsp;mm starke Aluminium-Dibond-Platte kaschiert. </p>
+
+                    <!-- fine print / expandable -->
+                    <details
+                        class="mt-3 rounded-xl border border-neutral-900 bg-neutral-950/60 p-4 text-sm open:ring-1 open:ring-emerald-400/20">
+                        <summary class="cursor-pointer select-none text-neutral-300 hover:text-emerald-400 transition">
+                            Mehr Details
+                        </summary>
+                        <div class="mt-3 grid gap-2 text-neutral-400">
+                            <p><span class="text-neutral-200">Material:</span> 2&nbsp;mm Alu-Dibond, Fotopapier,
+                                hochglänzend laminiert.</p>
+                            <p><span class="text-neutral-200">Produktion:</span> Qualitätsdruck, kontrolliert & sauber
+                                entgratet.</p>
+                            <p><span class="text-neutral-200">Aufhängung:</span> Stabiler Aufhänger im Lieferumfang</p>
+                            <p class="text-xs text-neutral-500">Hinweis: Farbdarstellung kann je nach Bildschirm leicht
+                                variieren.</p>
+                        </div>
+                    </details>
+
+                    <!-- accent underline -->
+                    <div class="h-1 w-10 bg-emerald-400 rounded-full mt-3"></div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 justify-end text-sm w-full md:w-auto" role="tablist"
+                    aria-label="Filter & Sortierung">
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            class="filter-btn rounded-full px-4 py-2 border border-neutral-800 hover:bg-neutral-900 transition is-active"
+                            data-filter="all" aria-selected="true">Alle</button>
+                        <button
+                            class="filter-btn rounded-full px-4 py-2 border border-neutral-800 hover:bg-neutral-900 transition"
+                            data-filter="birds">Vögel</button>
+                        <button
+                            class="filter-btn rounded-full px-4 py-2 border border-neutral-800 hover:bg-neutral-900 transition"
+                            data-filter="animals">Tiere</button>
+                        <button
+                            class="filter-btn rounded-full px-4 py-2 border border-neutral-800 hover:bg-neutral-900 transition"
+                            data-filter="landscapes">Landschaften</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grid" class="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+
+            <!-- Empty state -->
+            <div id="emptyState"
+                class="hidden mt-10 rounded-2xl border border-neutral-800 p-8 text-center text-neutral-300">
+                Keine Bilder für diesen Filter. Bitte einen anderen Filter wählen.
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="scroll-mt-24 md:scroll-mt-28 py-16 md:py-24 border-t border-neutral-900">
+        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-5 gap-8 items-center">
+            <div class="md:col-span-2 rounded-3xl overflow-hidden">
+                <img src="img/milan-square.png" alt="Milan im Feld" class="w-3/4 md:w-2/3 mx-auto rounded-3xl"
+                    style="aspect-ratio: 1/1; max-width: 240px;" loading="lazy" />
+            </div>
+            <div class="md:col-span-3">
+                <h2 class="text-3xl md:text-4xl font-semibold">Über Milan</h2>
+                <div class="h-1 w-10 bg-emerald-400 rounded-full mt-3"></div>
+                <p class="text-neutral-300 mt-4">Ich bin Milan, Naturfotograf aus der Schweiz. Ich liebe es, Momente in
+                    der Wildnis einzufangen — von heimischen Vögeln bis zu tropischen Landschaften. Hier findest Du eine
+                    Auswahl meiner Arbeiten.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="scroll-mt-24 md:scroll-mt-28 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-semibold">Kontakt</h2>
+            <div class="h-1 w-10 bg-emerald-400 rounded-full mt-3"></div>
+
+            <div class="mt-8 grid md:grid-cols-2 gap-6">
+                <form id="contactForm" class="rounded-3xl border border-neutral-800 p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm text-neutral-200" for="cfName">Name</label>
+                        <input id="cfName" required type="text" placeholder="Ihr Name"
+                            class="mt-1 w-full rounded-xl bg-neutral-900 text-neutral-100 border border-neutral-700 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-neutral-200" for="cfEmail">Email</label>
+                        <input id="cfEmail" required type="email" placeholder="sie@beispiel.com"
+                            class="mt-1 w-full rounded-xl bg-neutral-900 text-neutral-100 border border-neutral-700 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-neutral-200" for="cfMessage">Nachricht</label>
+                        <textarea id="cfMessage" required rows="5" placeholder="Wie kann ich helfen?"
+                            class="mt-1 w-full rounded-xl bg-neutral-900 text-neutral-100 border border-neutral-700 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+                    </div>
+                    <div class="flex items-center justify-end gap-3">
+                        <button type="submit"
+                            class="rounded-2xl px-5 py-3 bg-emerald-400 text-neutral-900 font-medium hover:brightness-95 transition">
+                            Mit E-Mail-App senden
+                        </button>
+                    </div>
+                    <p class="text-xs text-neutral-500">Dies öffnet Dein Standard-E-Mail-Programm mit einer
+                        vorausgefüllten E-Mail. Auf dieser Seite werden keine Daten gespeichert.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-900 py-10 text-sm text-neutral-400">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© <span id="year"></span> Milan. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <!-- Buy Modal -->
+    <div id="buyModal" class="fixed inset-0 z-[70] hidden">
+        <div class="h-full w-full flex items-center justify-center p-4">
+            <div class="w-full max-w-md rounded-2xl bg-neutral-950 border border-neutral-800 shadow-2xl p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img id="bmThumb" src="" alt=""
+                            class="w-16 h-16 rounded-lg object-cover border border-neutral-800" />
+                        <div class="min-w-0">
+                            <h3 class="text-lg font-semibold">Diesen Druck bestellen</h3>
+                            <p id="bmTitle" class="text-sm text-neutral-400 mt-1 truncate"></p>
+                        </div>
+                    </div>
+                    <button id="bmClose"
+                        class="p-2 rounded-xl bg-neutral-900 border border-neutral-800 hover:bg-neutral-800"
+                        aria-label="Bestelldialog schliessen">
+                        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' class='w-5 h-5' fill='none'
+                            stroke='currentColor' stroke-width='2'>
+                            <path d='M6 18L18 6M6 6l12 12' />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="bmForm" class="mt-4 space-y-4">
+                    <div>
+                        <label class="block text-sm text-neutral-200">Groesse</label>
+                        <select id="bmSize"
+                            class="mt-1 w-full rounded-xl bg-white text-neutral-900 border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                            <option value="30 x 20 cm">30 x 20 cm</option>
+                            <option selected value="45 x 30 cm">45 x 30 cm</option>
+                            <option value="60 x 40 cm">60 x 40 cm</option>
+                            <option value="80 x 30 cm">80 x 30 cm</option>
+                            <option value="75 x 50 cm">75 x 50 cm</option>
+                            <option value="105 x 40 cm">105 x 40 cm</option>
+                            <option value="90 x 60 cm">90 x 60 cm</option>
+                            <option value="105 x 70 cm">105 x 70 cm</option>
+                            <option value="120 x 80 cm">120 x 80 cm</option>
+                        </select>
+                        <p class="mt-2 text-xs text-neutral-500">Material: Poster auf Alu-Dibond</p>
+                    </div>
+
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-sm text-neutral-400">Preis</span>
+                        <span id="bmPrice" class="text-2xl font-bold text-emerald-400">CHF —</span>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-2">
+                        <button type="button" id="bmCancel"
+                            class="rounded-xl px-4 py-2 border border-neutral-800 hover:bg-neutral-900 transition">Abbrechen</button>
+                        <button type="submit"
+                            class="rounded-xl px-4 py-2 bg-emerald-400 text-neutral-900 font-medium hover:brightness-95 transition">
+                            Weiter zum Google-Formular ↗
+                        </button>
+                    </div>
+                    <p class="text-xs text-neutral-500">Die Bestellung öffnet in einem neuen Tab. Prüfe die Angaben und
+                        sende sie dort ab.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 z-[60] hidden bg-black/90">
+        <button id="lightboxClose" type="button"
+            class="absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-xl bg-neutral-900/60 border border-neutral-800 hover:bg-neutral-900"
+            aria-label="Schliessen">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <button id="prevBtn"
+            class="absolute left-2 top-1/2 -translate-y-1/2 p-3 z-10 rounded-xl bg-neutral-900/60 border border-neutral-800 hover:bg-neutral-900"
+            aria-label="Zurück">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+        </button>
+        <button id="nextBtn"
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-3 z-10 rounded-xl bg-neutral-900/60 border border-neutral-800 hover:bg-neutral-900"
+            aria-label="Weiter">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6" />
+            </svg>
+        </button>
+        <figure class="relative h-full w-full flex items-center justify-center p-4 md:p-10">
+            <img id="lightboxImg" src="" alt="Vergrössertes Foto"
+                class="max-h-full max-w-full object-contain rounded-2xl shadow-2xl" />
+            <figcaption id="lightboxCaption"
+                class="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-lg bg-black/50 px-3 py-1 text-sm text-neutral-200">
+            </figcaption>
+        </figure>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ===== CONFIGURATION =====
+            const DEFAULT_PRICE = 99; // Default price for prints
+
+            // ===== ELEMENTS =====
+            const grid = document.getElementById('grid');
+            const mobileNav = document.getElementById('mobileNav');
+            const yearSpan = document.getElementById('year');
+            const emptyState = document.getElementById('emptyState');
+
+            // Lightbox
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightboxImg');
+            const lbCaption = document.getElementById('lightboxCaption');
+            const lbClose = document.getElementById('lightboxClose');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+
+            // Buy Modal
+            const bm = document.getElementById('buyModal');
+            const bmThumb = document.getElementById('bmThumb');
+            const bmTitle = document.getElementById('bmTitle');
+            const bmForm = document.getElementById('bmForm');
+            const bmSize = document.getElementById('bmSize');
+            const bmPrice = document.getElementById('bmPrice');
+            const bmClose = document.getElementById('bmClose');
+            const bmCancel = document.getElementById('bmCancel');
+            let selectedPhotoForPurchase = { title: '', url: '' };
+
+            // Contact
+            const cf = document.getElementById('contactForm');
+            const CONTACT_EMAIL = 'hello@mila.com'; // TODO: set your address
+
+            // ===== STATE =====
+            let lightboxItems = [];
+            let currentLightboxIndex = -1;
+
+            // ===== FUNCTIONS =====
+            async function buildGallery() {
+                if (!grid) return;
+                try {
+                    const response = await fetch('gallery-manifest.json');
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const images = await response.json();
+
+                    grid.innerHTML = images.map(img => `
+            <figure class="group cursor-zoom-in fig-wrap" data-category="${img.category}">
+              <div style="aspect-ratio: ${img.aspect}" class="overflow-hidden rounded-xl border border-neutral-800">
+                <img data-ll src="watermarked/${img.file}" alt="${img.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+              </div>
+              <div class="mt-2 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="font-medium truncate">${img.title}</div>
+                  <div class="text-xs text-neutral-400">ab CHF ${DEFAULT_PRICE}</div>
+                </div>
+                <button type="button" class="buy-inline rounded-xl px-3 py-2 bg-emerald-400 text-neutral-900 text-sm font-medium hover:brightness-95 transition">Kaufen</button>
+              </div>
+            </figure>
+          `).join('');
+
+                    initializeGalleryFeatures();
+                    updateEmptyState();
+                } catch (error) {
+                    console.error('Failed to build gallery:', error);
+                    grid.innerHTML = '<p class="text-neutral-400 col-span-full">Die Galerie konnte nicht geladen werden. Bitte später erneut versuchen.</p>';
+                }
+            }
+
+            function initializeGalleryFeatures() {
+                // Lazy loading fade-in
+                const io = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            const src = img.getAttribute('src');
+                            const tempImage = new Image();
+                            tempImage.onload = () => { img.dataset.loaded = 'true'; };
+                            tempImage.src = src;
+                            observer.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '200px' });
+                document.querySelectorAll('#grid img[data-ll]').forEach(img => io.observe(img));
+
+                // Filtering
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.filter-btn').forEach(b => {
+                            b.setAttribute('aria-selected', 'false');
+                            b.classList.remove('is-active');
+                        });
+                        btn.setAttribute('aria-selected', 'true');
+                        btn.classList.add('is-active');
+
+                        const filter = btn.dataset.filter;
+                        document.querySelectorAll('#grid figure').forEach(fig => {
+                            const show = filter === 'all' || fig.dataset.category === filter;
+                            fig.classList.toggle('hidden', !show);
+                        });
+
+                        // Recompute visible items for lightbox and empty state
+                        lightboxItems = Array.from(grid.querySelectorAll('figure:not(.hidden)'));
+                        updateEmptyState();
+                    });
+                });
+
+                // Lightbox & Buy via delegation
+                grid.addEventListener('click', (e) => {
+                    const figure = e.target.closest('figure');
+                    if (!figure) return;
+
+                    if (e.target.closest('.buy-inline')) {
+                        const img = figure.querySelector('img');
+                        openBuyModal({ title: img.alt, url: img.src });
+                        return;
+                    }
+
+                    lightboxItems = Array.from(grid.querySelectorAll('figure:not(.hidden)'));
+                    const clickedIndex = lightboxItems.indexOf(figure);
+                    if (clickedIndex > -1) openLightbox(clickedIndex);
+                });
+            }
+
+            function updateEmptyState() {
+                const visibleCount = grid.querySelectorAll('figure:not(.hidden)').length;
+                if (visibleCount === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            }
+
+            // Lightbox
+            function openLightbox(index) {
+                currentLightboxIndex = index;
+                const img = lightboxItems[currentLightboxIndex].querySelector('img');
+                lbImg.src = img.src;
+                lbCaption.textContent = img.alt;
+                lb.classList.remove('hidden');
+                document.body.classList.add('no-scroll');
+            }
+            function closeLightbox() {
+                lb.classList.add('hidden');
+                document.body.classList.remove('no-scroll');
+            }
+            function showNextImage() {
+                if (!lightboxItems.length) return;
+                currentLightboxIndex = (currentLightboxIndex + 1) % lightboxItems.length;
+                openLightbox(currentLightboxIndex);
+            }
+            function showPrevImage() {
+                if (!lightboxItems.length) return;
+                currentLightboxIndex = (currentLightboxIndex - 1 + lightboxItems.length) % lightboxItems.length;
+                openLightbox(currentLightboxIndex);
+            }
+
+            // Buy Modal
+            function openBuyModal(info) {
+                selectedPhotoForPurchase = info;
+                bmTitle.textContent = info.title;
+                bmThumb.src = info.url;
+                bmThumb.alt = info.title;
+                bm.classList.remove('hidden');
+                document.body.classList.add('no-scroll');
+                updatePrice();
+            }
+            function closeBuyModal() {
+                bm.classList.add('hidden');
+                document.body.classList.remove('no-scroll');
+            }
+            function computePriceFromSize(sizeString) {
+                const match = sizeString.match(/(\d+)\s*x\s*(\d+)/i);
+                if (!match) return null;
+                const [w, h] = [parseInt(match[1], 10), parseInt(match[2], 10)];
+                return ((w + h) * 2) - 1; // CHF = (Breite + Höhe) * 2
+            }
+            function updatePrice() {
+                const price = computePriceFromSize(bmSize.value);
+                bmPrice.textContent = (price === null) ? 'CHF —' : `CHF ${price}`;
+            }
+
+            // Mobile nav
+            document.getElementById('navToggle')?.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', e => {
+                    const id = a.getAttribute('href');
+                    const target = document.querySelector(id);
+                    if (id === '#' || !target) return;
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    mobileNav?.classList.add('hidden');
+                });
+            });
+
+            // Lightbox controls
+            lbClose?.addEventListener('click', closeLightbox);
+            nextBtn?.addEventListener('click', showNextImage);
+            prevBtn?.addEventListener('click', showPrevImage);
+            lb?.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+            window.addEventListener('keydown', e => {
+                if (lb.classList.contains('hidden')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') showNextImage();
+                if (e.key === 'ArrowLeft') showPrevImage();
+            });
+
+            // Buy modal controls
+            bmClose?.addEventListener('click', closeBuyModal);
+            bmCancel?.addEventListener('click', closeBuyModal);
+            bm?.addEventListener('click', (e) => { if (e.target === bm) closeBuyModal(); });
+            bmSize?.addEventListener('change', updatePrice);
+            bmForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSepfQH6Z5g5rkhCnaNGf4KKFsx7vQcqQvhRQgYLEeKClLCdiQ/viewform';
+                const params = new URLSearchParams({
+                    'usp': 'pp_url',
+                    'entry.233614432': selectedPhotoForPurchase.title, // photoTitle
+                    'entry.63184375': bmSize.value // size
+                });
+                window.open(`${GOOGLE_FORM_BASE}?${params.toString()}`, '_blank');
+                closeBuyModal();
+            });
+
+            // Contact (mailto)
+            cf?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('cfName').value.trim();
+                const email = document.getElementById('cfEmail').value.trim();
+                const msg = document.getElementById('cfMessage').value.trim();
+                const subject = `Anfrage von ${name || 'Ihrer Webseite'}`;
+                const body = `${msg}\n\n— — —\nName: ${name}\nEmail: ${email}\nVon: ${location.href}`;
+                window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            });
+
+            // Footer year
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+            // Kickoff
+            buildGallery();
+        });
+    </script>
+
+    <noscript>
+        <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-red-300">
+            JavaScript ist erforderlich, um eine Bestellung aufzugeben. Bitte aktivieren Sie JavaScript oder senden Sie
+            eine E-Mail an
+            <a class="underline" href="mailto:hello@example.com">hello@example.com</a>.
+        </div>
+    </noscript>
+</body>
+
+</html>
