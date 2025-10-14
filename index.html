@@ -7,11 +7,11 @@
 
     <title>Milan — Tier- und Naturfotografie</title>
     <meta name="description"
-        content="Portfolio des Tier- und Naturfotografen Milan. Kunstdrucke, Feldgeschichten und kuratierte Sammlungen." />
+        content="Portfolio des Tier- und Naturfotografen Milan" />
 
     <!-- Open Graph / Twitter for nice link previews -->
     <meta property="og:title" content="Milan — Tier- und Naturfotografie" />
-    <meta property="og:description" content="Kunstdrucke, Feldgeschichten und kuratierte Sammlungen." />
+    <meta property="og:description" content="" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="watermarked/110_Landschaft_Herbst auf dem Bachtelturm_3x2.jpg" />
     <meta property="og:site_name" content="Milan" />
@@ -376,7 +376,10 @@
 
             // Contact
             const cf = document.getElementById('contactForm');
-            const CONTACT_EMAIL = 'hello@mila.com'; // TODO: set your address
+            const CONTACT_EMAIL = (() => {
+            const codes = [99,111,110,116,97,99,116,64,109,98,104,46,112,104,111,116,111,115];
+            return String.fromCharCode(...codes);
+        })(); 
 
             // ===== STATE =====
             let lightboxItems = [];
@@ -591,11 +594,9 @@
 
     <noscript>
         <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-red-300">
-            JavaScript ist erforderlich, um eine Bestellung aufzugeben. Bitte aktivieren Sie JavaScript oder senden Sie
-            eine E-Mail an
-            <a class="underline" href="mailto:hello@example.com">hello@example.com</a>.
+            JavaScript ist (leider) erforderlich, um eine Bestellung aufzugeben, oder mich zu kontaktieren. Bitte aktiviere JavaScript.
         </div>
-    </noscript>
+</noscript>
 </body>
 
 </html>
