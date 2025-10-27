@@ -21,6 +21,69 @@
     "aspect": "3 / 2"
   },
   {
+    "file": "140_Landschaft_Fikus_Brücke_3x2.jpg",
+    "sort": 140,
+    "category": "landscapes",
+    "title": "Fikus Brücke",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "150_Landschaft_Samnaun_Berglandschaft_3x2.jpg",
+    "sort": 150,
+    "category": "landscapes",
+    "title": "Samnaun Berglandschaft",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "170_Landschaft_Vulkan_La_Conception_3x2.jpg",
+    "sort": 170,
+    "category": "landscapes",
+    "title": "Vulkan La Conception",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "180_Landschaft_Herbst_auf_dem_Bachtelturm_2_3x2.jpg",
+    "sort": 180,
+    "category": "landscapes",
+    "title": "Herbst auf dem Bachtelturm 2",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "190_Landschaft_Gewitter_über_dem_Zürichsee_3x2.jpg",
+    "sort": 190,
+    "category": "landscapes",
+    "title": "Gewitter über dem Zürichsee",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "190_Landschaft_Hexenhaus_im_Nebel_3x2.jpg",
+    "sort": 190,
+    "category": "landscapes",
+    "title": "Hexenhaus im Nebel",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "190_Landschaft_Sternenhimmel_in_Frankreich_3x2.jpg",
+    "sort": 190,
+    "category": "landscapes",
+    "title": "Sternenhimmel in Frankreich",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "190_Landschaft_Winter_auf_dem_Säntis_3x2.jpg",
+    "sort": 190,
+    "category": "landscapes",
+    "title": "Winter auf dem Säntis",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "190_Landschaft_Winterlandschaft_vom_Ballon_3x2.jpg",
+    "sort": 190,
+    "category": "landscapes",
+    "title": "Winterlandschaft vom Ballon",
+    "aspect": "3 / 2"
+  },
+  {
     "file": "200_Tier_Kapuziner Affe_3x2.jpg",
     "sort": 200,
     "category": "animals",
@@ -70,10 +133,199 @@
     "aspect": "3 / 2"
   },
   {
+    "file": "260_Vogel_Wasservögel_Reflektion_3x2.jpg",
+    "sort": 260,
+    "category": "birds",
+    "title": "Wasservögel Reflektion",
+    "aspect": "3 / 2"
+  },
+  {
     "file": "270_Tier_Libelle_3x2.jpg",
     "sort": 270,
     "category": "animals",
     "title": "Libelle",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "280_Tier_Katze_3x2.jpg",
+    "sort": 280,
+    "category": "animals",
+    "title": "Katze",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Basilisk_Echse_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Basilisk Echse",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Blaue_Krabbe_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Blaue Krabbe",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Elephant_und_Baby_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Elephant und Baby",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Erdmännchen_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Erdmännchen",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Erdmännchen_Gruppe_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Erdmännchen Gruppe",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Erdmännchen_am_Schwingen_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Erdmännchen am Schwingen",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Faultier_Frisur_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Faultier Frisur",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Fledermäuse_auf_Baum_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Fledermäuse auf Baum",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Häuschenkrabbe_am_Strand_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Häuschenkrabbe am Strand",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Kapuzineraffe_am_Fressen_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Kapuzineraffe am Fressen",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Kapuzineraffe_mit_Zauberstab_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Kapuzineraffe mit Zauberstab",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Katze_auf_Tisch_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Katze auf Tisch",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Käfer_auf_Stange_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Käfer auf Stange",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Koala_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Koala",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Kuh_im_Nebel_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Kuh im Nebel",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Reh_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Reh",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Schlange_auf_Bananenpflanze_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Schlange auf Bananenpflanze",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Spinne_im_Netz_3x2.JPG",
+    "sort": 290,
+    "category": "animals",
+    "title": "Spinne im Netz",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Strauss_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Strauss",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Tausendfüssler_in_Frankreich_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Tausendfüssler in Frankreich",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Waschbär_am_Strand_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Waschbär am Strand",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "290_Tier_Waschbär_überrascht_3x2.jpg",
+    "sort": 290,
+    "category": "animals",
+    "title": "Waschbär überrascht",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "291_Tier_Chamäleon_3x2.jpg",
+    "sort": 291,
+    "category": "animals",
+    "title": "Chamäleon",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "291_Tier_Faultier_am_kratzen_3x2.jpg",
+    "sort": 291,
+    "category": "animals",
+    "title": "Faultier am kratzen",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "292_Tier_Baby_Erdmännchen_3x2.jpg",
+    "sort": 292,
+    "category": "animals",
+    "title": "Baby Erdmännchen",
     "aspect": "3 / 2"
   },
   {
@@ -91,10 +343,94 @@
     "aspect": "3 / 2"
   },
   {
-    "file": "400_Landschaft_Bachtelspalt_2x3.jpg",
-    "sort": 400,
+    "file": "320_Vogel_Babyvogel_Fütterung_3x2.jpg",
+    "sort": 320,
+    "category": "birds",
+    "title": "Babyvogel Fütterung",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "330_Vogel_Sonnenralle_mit_Libelle_3x2.jpg",
+    "sort": 330,
+    "category": "birds",
+    "title": "Sonnenralle mit Libelle",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "340_Vogel_Kolibri_3x2.jpg",
+    "sort": 340,
+    "category": "birds",
+    "title": "Kolibri",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "350_Vogel_Scharlangtangare_mit_Papaya_3x2.jpg",
+    "sort": 350,
+    "category": "birds",
+    "title": "Scharlangtangare mit Papaya",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "360_Vogel_Uferläufer_3x2.jpg",
+    "sort": 360,
+    "category": "birds",
+    "title": "Uferläufer",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "370_Vogel_Prachtfregattvogel_3x2.jpg",
+    "sort": 370,
+    "category": "birds",
+    "title": "Prachtfregattvogel",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "500_Abstrakt_Bismuth_Makro_3x2.jpg",
+    "sort": 500,
+    "category": "abstract",
+    "title": "Bismuth Makro",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "510_Abstrakt_Gesprossene_Kokosnuss_3x2.jpg",
+    "sort": 510,
+    "category": "abstract",
+    "title": "Gesprossene Kokosnuss",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "520_Abstrakt_Schaufensterkunst_3x2.jpg",
+    "sort": 520,
+    "category": "abstract",
+    "title": "Schaufensterkunst",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "530_Abstrakt_Tropfen_auf_Feder_3x2.JPG",
+    "sort": 530,
+    "category": "abstract",
+    "title": "Tropfen auf Feder",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "530_Abstrakt_Weihnachtsstern_3x2.jpg",
+    "sort": 530,
+    "category": "abstract",
+    "title": "Weihnachtsstern",
+    "aspect": "3 / 2"
+  },
+  {
+    "file": "600_Landschaft_Bachtelspalt_2x3.jpg",
+    "sort": 600,
     "category": "landscapes",
     "title": "Bachtelspalt",
+    "aspect": "2 / 3"
+  },
+  {
+    "file": "600_Landschaft_Herbstbaum_im_Wasser_2x3.jpg",
+    "sort": 600,
+    "category": "landscapes",
+    "title": "Herbstbaum im Wasser",
     "aspect": "2 / 3"
   }
 ]

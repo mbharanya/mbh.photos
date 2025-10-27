@@ -9,7 +9,8 @@ const manifestPath = path.join(__dirname, 'gallery-manifest.json');
 const categoryMap = {
     'Landschaft': 'landscapes',
     'Vogel': 'birds',
-    'Tier': 'animals'
+    'Tier': 'animals',
+    'Abstrakt': 'abstract'
 };
 
 try {
