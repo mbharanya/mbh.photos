@@ -374,7 +374,6 @@
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    keepalive: true, // helps send even on unload
                     body: JSON.stringify(payload),
                 }).catch(() => { /* swallow errors, never block UX */ });
             }
