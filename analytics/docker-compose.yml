@@ -23,6 +23,8 @@ services:
       # Where the MaxMind GeoLite2 Country DB will be mounted in the container
       GEOIP_DB_PATH: /geoip/GeoLite2-Country.mmdb
 
+      CORS_ALLOW_ORIGINS: "https://mbh.photos"
+
     volumes:
       # Persist analytics.sqlite3 outside the container so data survives restarts
       - ./data:/data

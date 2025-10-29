@@ -19,6 +19,11 @@ DASH_TOKEN = os.environ.get("ANALYTICS_DASH_TOKEN", "changeme")
 IP_SALT = os.environ.get("ANALYTICS_IP_SALT", "please-change-me-and-keep-secret")
 RETENTION_DAYS = int(os.environ.get("ANALYTICS_RETENTION_DAYS", "180"))
 GEOIP_DB_PATH = os.environ.get("GEOIP_DB_PATH", "/geoip/GeoLite2-Country.mmdb")
+CORS_ALLOW_ORIGINS = os.environ.get(
+    "CORS_ALLOW_ORIGINS",
+    "https://mbh.photos"
+).split(",")
+CORS_ALLOW_ORIGINS = [o.strip() for o in CORS_ALLOW_ORIGINS if o.strip()]
 
 # 1x1 transparent gif
 PIXEL_BYTES = (
@@ -145,6 +150,16 @@ def before():
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
+
+def pick_cors_origin(request_origin: str | None) -> str | None:
+    if not request_origin:
+        return None
+    for allowed in CORS_ALLOW_ORIGINS:
+        if request_origin == allowed:
+            return allowed
+    return None
+
+
 def anonymize_ip(raw_ip: str) -> str:
     """
     Truncate the IP (coarse bucket), then HMAC with a secret salt.
@@ -286,19 +301,12 @@ def pixel():
     resp.headers["Expires"] = "0"
     return resp
 
-
-@app.route("/event", methods=["POST"])
+@app.route("/event", methods=["POST", "OPTIONS"])
 def event():
-    """
-    Track custom actions like opening a lightbox, starting checkout, etc.
-    Expected JSON:
-    {
-      "type": "buy_checkout",
-      "target": "Snowy Owl :: 60x40",
-      "page": "/"
-    }
-    We DO NOT store personal data (email, name, message).
-    """
+    if request.method == "OPTIONS":
+        # Preflight passes through add_cors_headers(), so we just return 200
+        return ("", 200)
+
     data = request.get_json(silent=True) or {}
     event_type = str(data.get("type", "unknown"))[:50]
     page_path = str(data.get("page", "/"))[:500]
@@ -556,6 +564,25 @@ code {
 @app.route("/healthz")
 def healthz():
     return "ok", 200
+
+@app.after_request
+def add_cors_headers(resp):
+    origin = pick_cors_origin(request.headers.get("Origin"))
+
+    if origin:
+        # Figure out which methods/headers Firefox just asked for, fall back to safe defaults
+        req_method = request.headers.get("Access-Control-Request-Method", "GET,POST,OPTIONS")
+        req_headers = request.headers.get("Access-Control-Request-Headers", "Content-Type")
+
+        # Attach CORS headers
+        resp.headers["Access-Control-Allow-Origin"] = origin
+        resp.headers["Vary"] = "Origin"
+        resp.headers["Access-Control-Allow-Credentials"] = "false"
+        resp.headers["Access-Control-Allow-Methods"] = req_method
+        resp.headers["Access-Control-Allow-Headers"] = req_headers
+        resp.headers["Access-Control-Max-Age"] = "600"  # cache preflight 10min
+
+    return resp
 
 
 if __name__ == "__main__":
