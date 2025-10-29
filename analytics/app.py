@@ -19,13 +19,15 @@ DASH_TOKEN = os.environ.get("ANALYTICS_DASH_TOKEN", "changeme")
 IP_SALT = os.environ.get("ANALYTICS_IP_SALT", "please-change-me-and-keep-secret")
 RETENTION_DAYS = int(os.environ.get("ANALYTICS_RETENTION_DAYS", "180"))
 GEOIP_DB_PATH = os.environ.get("GEOIP_DB_PATH", "/geoip/GeoLite2-Country.mmdb")
+
+# CORS allowlist (for cross-origin usage if you still call analytics.xmb.li from another domain)
 CORS_ALLOW_ORIGINS = os.environ.get(
     "CORS_ALLOW_ORIGINS",
     "https://mbh.photos"
 ).split(",")
 CORS_ALLOW_ORIGINS = [o.strip() for o in CORS_ALLOW_ORIGINS if o.strip()]
 
-# 1x1 transparent gif
+# 1x1 transparent gif bytes (tracking pixel)
 PIXEL_BYTES = (
     b"GIF89a"
     b"\x01\x00\x01\x00"
@@ -54,7 +56,7 @@ def get_geoip_reader():
 
 
 # -----------------------------------------------------------------------------
-# DB helpers
+# DB helpers / migrations
 # -----------------------------------------------------------------------------
 def get_db():
     if "db" not in g:
@@ -70,8 +72,8 @@ def close_db(exc):
 
 def ensure_columns(db):
     """
-    Create / migrate tables if needed. This gets called on every request and
-    is idempotent.
+    Create tables if missing and try to backfill new columns.
+    Safe to run every request.
     """
     db.execute(
         """
@@ -104,10 +106,20 @@ def ensure_columns(db):
         """
     )
 
-    # Try to add any missing columns in case of older DB
+    # try to add missing columns on upgrade
     for table, coldefs in {
-        "pageviews": ["country TEXT", "ua_browser TEXT", "ua_os TEXT", "ip_bucket TEXT", "referrer TEXT"],
+        "pageviews": [
+            "ts TEXT",
+            "path TEXT",
+            "referrer TEXT",
+            "ua_browser TEXT",
+            "ua_os TEXT",
+            "ip_bucket TEXT",
+            "country TEXT"
+        ],
         "events": [
+            "ts TEXT",
+            "event_type TEXT",
             "page_path TEXT",
             "target TEXT",
             "ua_browser TEXT",
@@ -129,7 +141,8 @@ def ensure_columns(db):
 def before():
     db = get_db()
     ensure_columns(db)
-    # retention cleanup for both tables
+
+    # retention cleanup
     db.execute(
         """
         DELETE FROM pageviews
@@ -148,22 +161,12 @@ def before():
 
 
 # -----------------------------------------------------------------------------
-# Helpers
+# Privacy helpers
 # -----------------------------------------------------------------------------
-
-def pick_cors_origin(request_origin: str | None) -> str | None:
-    if not request_origin:
-        return None
-    for allowed in CORS_ALLOW_ORIGINS:
-        if request_origin == allowed:
-            return allowed
-    return None
-
-
 def anonymize_ip(raw_ip: str) -> str:
     """
-    Truncate the IP (coarse bucket), then HMAC with a secret salt.
-    Result is something like v4:abcd1234....
+    Bucket/truncate IP then HMAC with secret salt.
+    Returns something like "v4:abcd1234..." or "v6:abcd1234...".
     """
     try:
         ip_obj = ipaddress.ip_address(raw_ip)
@@ -192,10 +195,11 @@ def anonymize_ip(raw_ip: str) -> str:
 
 def parse_user_agent(ua: str):
     """
-    We classify browser + OS coarsely so it's not fingerprinty.
+    Rough browser + OS classification (coarse on purpose).
     """
     ua_lower = ua.lower()
 
+    # browser
     if "firefox" in ua_lower and "seamonkey" not in ua_lower:
         browser = "Firefox"
     elif "chrome" in ua_lower and "chromium" not in ua_lower and "edg" not in ua_lower:
@@ -209,6 +213,7 @@ def parse_user_agent(ua: str):
     else:
         browser = "Other"
 
+    # OS
     if "windows" in ua_lower:
         os_name = "Windows"
     elif "mac os x" in ua_lower or "macintosh" in ua_lower:
@@ -226,7 +231,7 @@ def parse_user_agent(ua: str):
 
 def sanitize_referrer(raw_ref):
     """
-    Only keep the referrer's hostname, not full URL.
+    Keep only the hostname of Referer. (Don't store full URL/query/etc.)
     """
     if not raw_ref:
         return None
@@ -236,10 +241,10 @@ def sanitize_referrer(raw_ref):
     except Exception:
         return None
 
-def lookup_country(raw_ip: str) -> str:
+def get_country_from_ip(raw_ip: str) -> str:
     """
-    Return ISO country code ('CH', 'DE', etc.) or 'UNK'.
-    We do NOT store the raw IP.
+    Return ISO country code from IP using local MaxMind DB.
+    Store only the 2-letter code, never the full IP.
     """
     reader = get_geoip_reader()
     if reader is None or not raw_ip:
@@ -253,11 +258,11 @@ def lookup_country(raw_ip: str) -> str:
 
 def request_fingerprint(req):
     """
-    Produce the anon metadata we reuse for pageviews and events.
+    Extract anonymized metadata for pageviews and events.
     """
     src_ip = req.headers.get("X-Forwarded-For", req.remote_addr)
     ip_bucket = anonymize_ip(src_ip)
-    country_code = lookup_country(src_ip)
+    country_code = get_country_from_ip(src_ip)
     ua_browser, ua_os = parse_user_agent(req.headers.get("User-Agent", ""))
 
     return {
@@ -267,14 +272,54 @@ def request_fingerprint(req):
         "ua_os": ua_os,
     }
 
+def pick_cors_origin(request_origin: str | None) -> str | None:
+    """
+    Return allowed origin if it matches our allowlist.
+    """
+    if not request_origin:
+        return None
+    for allowed in CORS_ALLOW_ORIGINS:
+        if request_origin == allowed:
+            return allowed
+    return None
+
+@app.after_request
+def add_cors_headers(resp):
+    """
+    Attach CORS headers if this was a cross-origin call from an allowed Origin.
+    For same-origin (/analytics/... reverse proxy) CORS won't be needed.
+    """
+    origin = pick_cors_origin(request.headers.get("Origin"))
+
+    if origin:
+        req_method = request.headers.get("Access-Control-Request-Method", "GET,POST,OPTIONS")
+        req_headers = request.headers.get("Access-Control-Request-Headers", "Content-Type")
+
+        resp.headers["Access-Control-Allow-Origin"] = origin
+        resp.headers["Vary"] = "Origin"
+        resp.headers["Access-Control-Allow-Credentials"] = "false"
+        resp.headers["Access-Control-Allow-Methods"] = req_method
+        resp.headers["Access-Control-Allow-Headers"] = req_headers
+        resp.headers["Access-Control-Max-Age"] = "600"
+    return resp
+
+
 # -----------------------------------------------------------------------------
-# Routes
+# Ingest routes
 # -----------------------------------------------------------------------------
 @app.route("/148a2801968b695634b116e620005dbb.gif")
 def pixel():
+    """
+    Tracking pixel endpoint.
+    IMPORTANT: this route name stays EXACTLY as provided.
+    You include it like:
+      <img src="/analytics/148a2801968b695634b116e620005dbb.gif?p=/path">
+    """
     meta = request_fingerprint(request)
 
+    # capture the path being viewed (from the query param you add in HTML/JS)
     path = request.args.get("p", "/")
+    # capture referring site (domain only)
     ref = sanitize_referrer(request.headers.get("Referer"))
 
     db = get_db()
@@ -301,10 +346,18 @@ def pixel():
     resp.headers["Expires"] = "0"
     return resp
 
+
 @app.route("/event", methods=["POST", "OPTIONS"])
 def event():
+    """
+    Custom event endpoint.
+    Body example:
+      { "type": "buy_checkout",
+        "target": "Snowy Owl :: 60x40",
+        "page": "/" }
+    No personal data (no email/name/message).
+    """
     if request.method == "OPTIONS":
-        # Preflight passes through add_cors_headers(), so we just return 200
         return ("", 200)
 
     data = request.get_json(silent=True) or {}
@@ -338,6 +391,55 @@ def event():
     return jsonify({"ok": True})
 
 
+# -----------------------------------------------------------------------------
+# Sparkline builder (inline SVG chart)
+# -----------------------------------------------------------------------------
+def build_sparkline(points, width=320, height=60, stroke="#38bdf8"):
+    """
+    Tiny inline SVG sparkline.
+    points: list[(day_string, views_int)], ascending by day.
+    """
+    if not points:
+        svg = f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" ' \
+              f'fill="none" stroke="{stroke}" stroke-width="2" stroke-linecap="round" ' \
+              f'shape-rendering="geometricPrecision"></svg>'
+        return {"svg": svg, "last_count": 0}
+
+    counts = [p[1] for p in points]
+    max_c = max(counts) or 1
+    min_c = min(counts)
+    span_c = max_c - min_c or 1
+
+    n = len(points)
+    if n == 1:
+        xs = [width / 2]
+    else:
+        xs = [i * (width / (n - 1)) for i in range(n)]
+
+    ys = [
+        height - ((c - min_c) / span_c) * (height - 4) - 2
+        for c in counts
+    ]
+
+    d_parts = []
+    for i, (x, y) in enumerate(zip(xs, ys)):
+        cmd = "M" if i == 0 else "L"
+        d_parts.append(f"{cmd}{x:.1f},{y:.1f}")
+    d_attr = " ".join(d_parts)
+
+    svg = f'''
+<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}"
+     fill="none" stroke="{stroke}" stroke-width="2" stroke-linecap="round"
+     shape-rendering="geometricPrecision">
+  <path d="{d_attr}" />
+</svg>'''.strip()
+
+    return {"svg": svg, "last_count": counts[-1]}
+
+
+# -----------------------------------------------------------------------------
+# Dashboard
+# -----------------------------------------------------------------------------
 @app.route("/stats")
 def stats():
     token = request.args.get("token", "")
@@ -346,7 +448,7 @@ def stats():
 
     db = get_db()
 
-    # Top pages
+    # Top pages (30d)
     recent_paths = db.execute(
         """
         SELECT path, COUNT(*) as views
@@ -358,7 +460,21 @@ def stats():
         """
     ).fetchall()
 
-    # Countries
+    total_views_30d = sum(row["views"] for row in recent_paths)
+
+    # Top referrers (30d)
+    recent_referrers = db.execute(
+        """
+        SELECT referrer, COUNT(*) as hits
+        FROM pageviews
+        WHERE ts >= datetime('now', '-30 days') AND referrer IS NOT NULL
+        GROUP BY referrer
+        ORDER BY hits DESC
+        LIMIT 50;
+        """
+    ).fetchall()
+
+    # Countries (30d)
     recent_countries = db.execute(
         """
         SELECT country, COUNT(*) as hits
@@ -369,7 +485,7 @@ def stats():
         """
     ).fetchall()
 
-    # Browser / OS breakdown
+    # Browser / OS (30d)
     recent_agents = db.execute(
         """
         SELECT ua_browser, ua_os, COUNT(*) as hits
@@ -380,7 +496,7 @@ def stats():
         """
     ).fetchall()
 
-    # Events
+    # Events (30d)
     recent_events = db.execute(
         """
         SELECT event_type, target, COUNT(*) as hits
@@ -392,6 +508,29 @@ def stats():
         """
     ).fetchall()
 
+    total_events_30d = sum(row["hits"] for row in recent_events)
+
+    # pick top page / country
+    top_page = recent_paths[0]["path"] if recent_paths else "-"
+    top_country = recent_countries[0]["country"] if recent_countries else "-"
+
+    # views per day for sparkline
+    by_day = db.execute(
+        """
+        SELECT strftime('%Y-%m-%d', ts) AS day, COUNT(*) AS views
+        FROM pageviews
+        WHERE ts >= datetime('now', '-30 days')
+        GROUP BY day
+        ORDER BY day ASC;
+        """
+    ).fetchall()
+
+    day_points = [(row["day"], row["views"]) for row in by_day]
+    spark = build_sparkline(day_points, width=320, height=60, stroke="#38bdf8")
+    spark_svg = spark["svg"]
+    spark_last = spark["last_count"]
+
+    # dashboard HTML with Referrers card added
     html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -400,190 +539,422 @@ def stats():
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Minimal Analytics</title>
 <style>
-body {
-  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background-color:#0f172a;
-  color:#f8fafc;
+:root {
+  --bg-main:#0f172a;
+  --bg-card:#1e293b;
+  --text-main:#f8fafc;
+  --text-dim:#94a3b8;
+  --text-dimmer:#64748b;
+  --border-card:#334155;
+  --border-head:#475569;
+  --accent:#38bdf8;
+  --radius-lg:1rem;
+  --shadow-card:0 20px 40px rgb(0 0 0 / .6);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background-color:var(--bg-main);
+  color:var(--text-main);
   padding:2rem;
   line-height:1.4;
+  -webkit-font-smoothing:antialiased;
 }
-h1,h2 {
-  font-weight:600;
-  color:#fff;
-  margin-top:1.5rem;
-  margin-bottom:.5rem;
-}
-.card {
-  background-color:#1e293b;
-  border-radius:1rem;
-  box-shadow:0 20px 40px rgb(0 0 0 / .6);
-  padding:1rem 1.5rem;
+header{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
   margin-bottom:2rem;
 }
-table {
+@media(min-width:600px){
+  header{flex-direction:row;justify-content:space-between;align-items:flex-end}
+}
+.title{
+  font-size:1.2rem;
+  font-weight:600;
+  color:#fff;
+}
+.subtitle{
+  font-size:.8rem;
+  color:var(--text-dimmer);
+  max-width:480px;
+  line-height:1.4;
+}
+
+.grid-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));
+  gap:1rem;
+  margin-bottom:2rem;
+}
+.metric-card{
+  background:var(--bg-card);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-card);
+  padding:1rem 1.25rem;
+  min-width:0;
+}
+.metric-head{
+  font-size:.7rem;
+  font-weight:500;
+  color:var(--text-dim);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:.5rem;
+}
+.metric-value{
+  font-size:1.4rem;
+  font-weight:600;
+  color:var(--text-main);
+  line-height:1.2;
+}
+.metric-foot{
+  font-size:.7rem;
+  color:var(--text-dimmer);
+  margin-top:.4rem;
+  line-height:1.3;
+  word-break:break-word;
+}
+.metric-accent{
+  color:var(--accent);
+  font-weight:600;
+}
+.spark-card{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:1rem;
+}
+.spark-svg{
+  width:100%;
+  max-width:320px;
+  height:auto;
+}
+.spark-info{
+  text-align:right;
+}
+.spark-label{
+  font-size:.7rem;
+  color:var(--text-dim);
+}
+.spark-value{
+  font-size:1.2rem;
+  font-weight:600;
+  color:var(--accent);
+  line-height:1.2;
+}
+
+.sections{
+  display:grid;
+  gap:1.5rem;
+  margin-bottom:2rem;
+}
+@media(min-width:1100px){
+  .sections{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+.card{
+  background-color:var(--bg-card);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-card);
+  padding:1rem 1.5rem;
+}
+.card-header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:.75rem;
+  flex-wrap:wrap;
+  gap:.5rem;
+}
+.card-title{
+  font-weight:600;
+  color:#fff;
+  font-size:1rem;
+  line-height:1.2;
+}
+.card-hint{
+  font-size:.7rem;
+  color:var(--text-dim);
+  line-height:1.2;
+}
+
+table{
   width:100%;
   border-collapse:collapse;
-  font-size:.9rem;
+  font-size:.8rem;
 }
-th {
+th{
   text-align:left;
   font-weight:600;
   color:#e2e8f0;
-  border-bottom:1px solid #475569;
+  border-bottom:1px solid var(--border-head);
   padding:.5rem .25rem;
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.03em;
 }
-td {
-  border-bottom:1px solid #334155;
+td{
+  border-bottom:1px solid var(--border-card);
   padding:.5rem .25rem;
   color:#cbd5e1;
   vertical-align:top;
+  line-height:1.4;
+  word-break:break-word;
 }
-.footer {
-  font-size:.75rem;
-  color:#64748b;
+td.num{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.footer{
+  font-size:.7rem;
+  color:var(--text-dimmer);
+  line-height:1.5;
+  max-width:650px;
   margin-top:3rem;
-  max-width:600px;
 }
-@media(min-width:1100px){
-  .layout{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:1.5rem;
-  }
-  .layout-wide{
-    grid-column:span 2;
-  }
+.footer ul{
+  margin:.5rem 0 .5rem 1rem;
 }
-.badge {
+.footer li{
+  margin-bottom:.4rem;
+}
+.badge{
   background-color:#334155;
   border-radius:.5rem;
-  padding:.125rem .5rem;
-  font-size:.75rem;
+  padding:.2rem .5rem;
+  font-size:.7rem;
   color:#94a3b8;
   display:inline-block;
+  line-height:1.2;
+  margin-top:.5rem;
+  font-weight:500;
 }
-code {
-  background:#1e293b;
-  color:#94a3b8;
-  padding:.15rem .4rem;
-  border-radius:.4rem;
-  font-size:.75rem;
+
+@media(min-width:1300px){
+  .wide-2col{
+    grid-column:span 2;
+  }
 }
 </style>
 </head>
 <body>
-<h1>Minimal Analytics · last 30 days</h1>
 
-<div class="layout">
+<header>
+  <div class="title">Minimal Analytics · last 30 days</div>
+  <div class="subtitle">
+    Anonymous, cookie-less, first-party style metrics. No personal data, auto-purged after {{ retention }} days.
+  </div>
+</header>
+
+<section class="grid-cards">
+
+  <div class="metric-card">
+    <div class="metric-head">
+      <span>Pageviews</span>
+      <span class="metric-accent">30d</span>
+    </div>
+    <div class="metric-value">{{ total_views_30d }}</div>
+    <div class="metric-foot">
+      Raw view count (we don't try to de-dupe people).
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-head">
+      <span>Tracked Events</span>
+      <span class="metric-accent">30d</span>
+    </div>
+    <div class="metric-value">{{ total_events_30d }}</div>
+    <div class="metric-foot">
+      lightbox_open / buy_open / buy_checkout / contact_start ...
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-head">
+      <span>Top Page</span>
+      <span class="metric-accent">traffic</span>
+    </div>
+    <div class="metric-value" style="font-size:1rem;word-break:break-word;">
+      {{ top_page }}
+    </div>
+    <div class="metric-foot">
+      Most viewed path.
+    </div>
+  </div>
+
+  <div class="metric-card spark-card">
+    <div class="spark-svg">
+      {{ spark_svg | safe }}
+    </div>
+    <div class="spark-info">
+      <div class="spark-label">Latest day</div>
+      <div class="spark-value">{{ spark_last }}</div>
+      <div class="metric-foot" style="margin-top:.4rem;">
+        Pageviews / day (30d)
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-head">
+      <span>Top Country</span>
+      <span class="metric-accent">30d</span>
+    </div>
+    <div class="metric-value">{{ top_country }}</div>
+    <div class="metric-foot">
+      Based on coarse IP → country lookup.
+    </div>
+  </div>
+
+</section>
+
+<section class="sections">
 
   <div class="card">
-    <h2>Page Views</h2>
+    <div class="card-header">
+      <div class="card-title">Pages</div>
+      <div class="card-hint">Which URLs get viewed most</div>
+    </div>
     <table>
-      <tr><th>Path</th><th style="text-align:right;">Views</th></tr>
+      <tr><th>Path</th><th class="num">Views</th></tr>
       {% for row in recent_paths %}
       <tr>
         <td>{{ row["path"] }}</td>
-        <td style="text-align:right;">{{ row["views"] }}</td>
+        <td class="num">{{ row["views"] }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
   <div class="card">
-    <h2>Countries</h2>
+    <div class="card-header">
+      <div class="card-title">Referrers</div>
+      <div class="card-hint">Who sent traffic</div>
+    </div>
     <table>
-      <tr><th>Country</th><th style="text-align:right;">Hits</th></tr>
+      <tr><th>Domain</th><th class="num">Hits</th></tr>
+      {% for row in recent_referrers %}
+      <tr>
+        <td>{{ row["referrer"] }}</td>
+        <td class="num">{{ row["hits"] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Countries</div>
+      <div class="card-hint">Visitor origin (coarse)</div>
+    </div>
+    <table>
+      <tr><th>Country</th><th class="num">Hits</th></tr>
       {% for row in recent_countries %}
       <tr>
         <td>{{ row["country"] }}</td>
-        <td style="text-align:right;">{{ row["hits"] }}</td>
+        <td class="num">{{ row["hits"] }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
   <div class="card">
-    <h2>Browsers / OS</h2>
+    <div class="card-header">
+      <div class="card-title">Browsers / OS</div>
+      <div class="card-hint">Agent families (coarse)</div>
+    </div>
     <table>
-      <tr><th>Browser</th><th>OS</th><th style="text-align:right;">Hits</th></tr>
+      <tr><th>Browser</th><th>OS</th><th class="num">Hits</th></tr>
       {% for row in recent_agents %}
       <tr>
         <td>{{ row["ua_browser"] }}</td>
         <td>{{ row["ua_os"] }}</td>
-        <td style="text-align:right;">{{ row["hits"] }}</td>
+        <td class="num">{{ row["hits"] }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
-  <div class="card layout-wide">
-    <h2>Events</h2>
+  <div class="card wide-2col">
+    <div class="card-header">
+      <div class="card-title">Events</div>
+      <div class="card-hint">
+        Which actions people actually tried
+      </div>
+    </div>
     <table>
       <tr>
         <th>Event</th>
-        <th>Target (photo / size / etc.)</th>
-        <th style="text-align:right;">Count</th>
+        <th>Target</th>
+        <th class="num">Count</th>
       </tr>
       {% for row in recent_events %}
       <tr>
         <td>{{ row["event_type"] }}</td>
         <td>{{ row["target"] }}</td>
-        <td style="text-align:right;">{{ row["hits"] }}</td>
+        <td class="num">{{ row["hits"] }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
-</div>
+</section>
 
-<div class="footer">
+<section class="footer">
   <p>We store:</p>
   <ul>
-    <li>Page path &amp; referrer domain (page views only)</li>
-    <li>Anonymous country + anonymized IP bucket</li>
-    <li>Browser / OS family (coarse, not full UA)</li>
-    <li>Anonymous interaction events (lightbox opens, buy clicks, checkout attempts, contact starts)</li>
+    <li>Page path + timestamp</li>
+    <li>Referrer domain (if any)</li>
+    <li>Approx country from IP (2-letter code, never raw IP)</li>
+    <li>Browser / OS family (coarse)</li>
+    <li>Anonymous interaction events like <code>lightbox_open</code>, <code>buy_open</code>, <code>buy_checkout</code>, <code>contact_start</code></li>
   </ul>
-  <p>No cookies. No personal message content. Auto-delete after {{ retention }} days.</p>
-  <p class="badge">Legal basis: legitimate interest in understanding site usage and preventing abuse.</p>
-</div>
+
+  <p>
+    No cookies. No personal message contents. Auto-delete after {{ retention }} days.
+  </p>
+
+  <div class="badge">
+    Legal basis: legitimate interest in understanding site usage and preventing abuse.
+  </div>
+</section>
 
 </body>
 </html>
 """
+
     return render_template_string(
         html,
+        retention=RETENTION_DAYS,
+        total_views_30d=total_views_30d,
+        total_events_30d=total_events_30d,
+        top_page=top_page,
+        top_country=top_country,
+        spark_svg=spark_svg,
+        spark_last=spark_last,
         recent_paths=recent_paths,
+        recent_referrers=recent_referrers,
         recent_countries=recent_countries,
         recent_agents=recent_agents,
         recent_events=recent_events,
-        retention=RETENTION_DAYS,
     )
 
 
+# -----------------------------------------------------------------------------
+# health
+# -----------------------------------------------------------------------------
 @app.route("/healthz")
 def healthz():
     return "ok", 200
 
-@app.after_request
-def add_cors_headers(resp):
-    origin = pick_cors_origin(request.headers.get("Origin"))
-
-    if origin:
-        # Figure out which methods/headers Firefox just asked for, fall back to safe defaults
-        req_method = request.headers.get("Access-Control-Request-Method", "GET,POST,OPTIONS")
-        req_headers = request.headers.get("Access-Control-Request-Headers", "Content-Type")
-
-        # Attach CORS headers
-        resp.headers["Access-Control-Allow-Origin"] = origin
-        resp.headers["Vary"] = "Origin"
-        resp.headers["Access-Control-Allow-Credentials"] = "false"
-        resp.headers["Access-Control-Allow-Methods"] = req_method
-        resp.headers["Access-Control-Allow-Headers"] = req_headers
-        resp.headers["Access-Control-Max-Age"] = "600"  # cache preflight 10min
-
-    return resp
-
 
 if __name__ == "__main__":
+    # Dev mode, container uses gunicorn
     app.run(host="0.0.0.0", port=8000)
