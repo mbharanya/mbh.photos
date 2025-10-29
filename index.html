@@ -70,7 +70,8 @@
         .is-active {
             background-color: rgb(23 23 23 / 1);
             border-color: rgb(64 64 64 / 1);
-            color: #5a9a00; /* replaced emerald-400 */
+            color: #5a9a00;
+            /* replaced emerald-400 */
         }
     </style>
 </head>
@@ -352,6 +353,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // analytics endpoint base
+            const ANALYTICS_BASE = "https://analytics.xmb.li"; // <-- point to your container
+
+            function trackEvent(type, targetData = {}) {
+                // We'll send: { type: "buy_open", target: "...", page: location.pathname }
+                // We deliberately AVOID sending name/email/message/etc.
+                const payload = {
+                    type,
+                    page: location.pathname,
+                };
+
+                if (targetData.target) {
+                    payload.target = targetData.target;
+                }
+
+                // fire and forget, no cookies
+                fetch(`${ANALYTICS_BASE}/event`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    keepalive: true, // helps send even on unload
+                    body: JSON.stringify(payload),
+                }).catch(() => { /* swallow errors, never block UX */ });
+            }
+
             // ===== CONFIGURATION =====
             const DEFAULT_PRICE = 99; // Default price for prints
 
@@ -467,6 +494,11 @@
 
                     if (e.target.closest('.buy-inline')) {
                         const img = figure.querySelector('img');
+
+                        trackEvent("buy_open", {
+                            target: img.alt
+                        });
+
                         openBuyModal({ title: img.alt, url: img.src });
                         return;
                     }
@@ -494,7 +526,12 @@
                 lbCaption.textContent = img.alt;
                 lb.classList.remove('hidden');
                 document.body.classList.add('no-scroll');
+
+                trackEvent("lightbox_open", {
+                    target: img.alt  // this is the photo title you show in UI
+                });
             }
+
             function closeLightbox() {
                 lb.classList.add('hidden');
                 document.body.classList.remove('no-scroll');
@@ -569,11 +606,17 @@
             bmSize?.addEventListener('change', updatePrice);
             bmForm?.addEventListener('submit', (e) => {
                 e.preventDefault();
+
+                // fire analytics BEFORE opening new tab
+                trackEvent("buy_checkout", {
+                    target: `${selectedPhotoForPurchase.title} :: ${bmSize.value}`
+                });
+
                 const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSepfQH6Z5g5rkhCnaNGf4KKFsx7vQcqQvhRQgYLEeKClLCdiQ/viewform';
                 const params = new URLSearchParams({
                     'usp': 'pp_url',
-                    'entry.233614432': selectedPhotoForPurchase.title, // photoTitle
-                    'entry.63184375': bmSize.value // size
+                    'entry.233614432': selectedPhotoForPurchase.title,
+                    'entry.63184375': bmSize.value
                 });
                 window.open(`${GOOGLE_FORM_BASE}?${params.toString()}`, '_blank');
                 closeBuyModal();
@@ -582,6 +625,12 @@
             // Contact (mailto)
             cf?.addEventListener('submit', (e) => {
                 e.preventDefault();
+
+                // anonymous intent only
+                trackEvent("contact_start", {
+                    target: "contact_form"
+                });
+
                 const name = document.getElementById('cfName').value.trim();
                 const email = document.getElementById('cfEmail').value.trim();
                 const msg = document.getElementById('cfMessage').value.trim();
@@ -589,6 +638,7 @@
                 const body = `${msg}\n\n— — —\nName: ${name}\nEmail: ${email}\nVon: ${location.href}`;
                 window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             });
+
 
             // Footer year
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
@@ -604,6 +654,8 @@
             aktiviere JavaScript.
         </div>
     </noscript>
+    <img src="https://analytics.xmb.li/148a2801968b695634b116e620005dbb.gif?p=/" alt="" referrerpolicy="no-referrer-when-downgrade"
+        style="width:1px;height:1px;border:0;position:absolute;left:-9999px;" />
 </body>
 
 </html>

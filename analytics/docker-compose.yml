@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  analytics:
+    build: .
+    restart: unless-stopped
+
+    environment:
+      # Where the SQLite file lives inside the container
+      ANALYTICS_DB: /data/analytics.sqlite3
+
+      # Change this to a strong random string.
+      # You will use it in the browser to view stats at /stats?token=THIS_VALUE
+      ANALYTICS_DASH_TOKEN: "super-secret-dashboard-token"
+
+      # This salt is used to HMAC truncated IP ranges.
+      # Change it to a long random secret and NEVER share it publicly.
+      ANALYTICS_IP_SALT: "random-long-secret-salt-change-me"
+
+      # Auto-delete old rows after N days (pageviews + events)
+      ANALYTICS_RETENTION_DAYS: "180"
+
+      # Where the MaxMind GeoLite2 Country DB will be mounted in the container
+      GEOIP_DB_PATH: /geoip/GeoLite2-Country.mmdb
+
+    volumes:
+      # Persist analytics.sqlite3 outside the container so data survives restarts
+      - ./data:/data
+
+      # Mount the MaxMind GeoLite2 Country database (download separately)
+      # You need to put GeoLite2-Country.mmdb next to this compose file.
+      - ./GeoLite2-Country.mmdb:/geoip/GeoLite2-Country.mmdb:ro
+
+    ports:
+      # hostPort:containerPort
+      # So you can reach it at http://localhost:8000
+      - "8000:8000"
